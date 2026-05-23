@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UGBS Study Group Survey</title>
+    <style>
+        :root {
+            --primary: #003366;
+            --bg: #f4f6f9;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .card {
+            background: white;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+            border-top: 5px solid var(--primary);
+        }
+        h2 { color: var(--primary); margin-top: 0; font-size: 24px; text-align: center; font-weight: 700; }
+        p { color: #5f6368; text-align: center; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        .input-group { margin-bottom: 22px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #3c4043; font-size: 14px; }
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+            background-color: #fafafa;
+        }
+        input[type="text"]:focus, select:focus {
+            border-color: var(--primary);
+            background-color: #fff;
+            outline: none;
+        }
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            background: #f8f9fa;
+            padding: 18px;
+            border-radius: 10px;
+            border: 1px solid #e8eaed;
+        }
+        .checkbox-item { display: flex; align-items: center; gap: 12px; font-size: 15px; color: #3c4043; cursor: pointer; }
+        .checkbox-item input { width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary); }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover { background-color: #002244; }
+        .hidden { display: none !important; }
+        .badge { background: #e8f0fe; color: var(--primary); padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; display: inline-block; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+    <!-- WELCOME SCREEN -->
+    <div id="welcomeScreen" class="card">
+        <h2>Welcome to the Study Group Survey!</h2>
+        <p>Please enter your full name below to access the course selection sheets.</p>
+        <div class="input-group">
+            <label for="userName">Student Full Name</label>
+            <input type="text" id="userName" placeholder="e.g., Kojo Mensah" required>
+        </div>
+        <button type="button" onclick="startSurvey()">Proceed to Survey</button>
+    </div>
+
+    <!-- SURVEY SCREEN -->
+    <div id="surveyScreen" class="card hidden">
+        <div class="badge">UGBS Course Enrollment</div>
+        <h2 id="greetUser">Survey Details</h2>
+        <p>Carefully select your academic tracks below.</p>
+        
+        <form id="surveyForm" onsubmit="submitData(event)">
+            <div class="input-group">
+                <label for="degreeTrack">Main Degree Track</label>
+                <select id="degreeTrack" onchange="toggleTracks()" required>
+                    <option value="">-- Select Track --</option>
+                    <option value="BSc">Bachelor of Science (BSc)</option>
+                    <option value="BA">Bachelor of Arts (BA)</option>
+                </select>
+            </div>
+
+            <!-- BSc Courses -->
+            <div id="bscBlock" class="input-group hidden">
+                <label>Select Your BSc Courses</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="checkbox" name="bsc_courses" value="Financial Accounting"> Financial Accounting</label>
+                    <label class="checkbox-item"><input type="checkbox" name="bsc_courses" value="Business Maths"> Business Maths</label>
+                    <label class="checkbox-item"><input type="checkbox" name="bsc_courses" value="Macroeconomics"> Macroeconomics</label>
+                    <label class="checkbox-item"><input type="checkbox" name="bsc_courses" value="Commercial Law"> Commercial Law</label>
+                </div>
+            </div>
+
+            <!-- BA Courses -->
+            <div id="baBlock" class="input-group hidden">
+                <label>Select Your BA Courses</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="checkbox" name="ba_courses" value="Financial Accounting"> Financial Accounting</label>
+                    <label class="checkbox-item"><input type="checkbox" name="ba_courses" value="Macroeconomics"> Macroeconomics</label>
+                    <label class="checkbox-item"><input type="checkbox" name="ba_courses" value="Commercial Law"> Commercial Law</label>
+                    <label class="checkbox-item"><input type="checkbox" name="ba_courses" value="Psychology"> Psychology</label>
+                    <label class="checkbox-item"><input type="checkbox" name="ba_courses" value="Information Studies"> Information Studies</label>
+                    <label class="checkbox-item"><input type="checkbox" name="ba_courses" value="Sociology"> Sociology</label>
+                    <label class="checkbox-item"><input type="checkbox" name="ba_courses" value="Languages"> Languages</label>
+                </div>
+                <div class="input-group" style="margin-top: 15px;">
+                    <label for="otherBA">Other BA Courses (Type if unlisted)</label>
+                    <input type="text" id="otherBA" placeholder="Type unlisted courses...">
+                </div>
+            </div>
+
+            <!-- UGRC -->
+            <div class="input-group">
+                <label for="ugrc">Choose your UGRC Course</label>
+                <select id="ugrc" onchange="toggleUgrc()" required>
+                    <option value="">-- Select UGRC --</option>
+                    <option value="Academic Writing">Academic Writing</option>
+                    <option value="African Studies">African Studies</option>
+                </select>
+            </div>
+
+            <!-- African Studies Detail -->
+            <div id="africanStudiesBlock" class="input-group hidden">
+                <label for="africanStudiesDetail">Specify African Studies Unit</label>
+                <input type="text" id="africanStudiesDetail" placeholder="Which African Studies course?">
+            </div>
+
+            <button type="submit" id="submitBtn">Submit Data</button>
+        </form>
+    </div>
+
+    <script>
+        let studentName = "";
+
+        function startSurvey() {
+            const nameInput = document.getElementById('userName').value.trim();
+            if(!nameInput) return alert("Please enter your name.");
+            studentName = nameInput;
+            document.getElementById('greetUser').innerText = `Hi ${studentName}, let's finish up!`;
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('surveyScreen').classList.remove('hidden');
+        }
+
+        function toggleTracks() {
+            const track = document.getElementById('degreeTrack').value;
+            document.getElementById('bscBlock').classList.toggle('hidden', track !== 'BSc');
+            document.getElementById('baBlock').classList.toggle('hidden', track !== 'BA');
+        }
+
+        function toggleUgrc() {
+            const ugrcVal = document.getElementById('ugrc').value;
+            const block = document.getElementById('africanStudiesBlock');
+            block.classList.toggle('hidden', ugrcVal !== 'African Studies');
+            document.getElementById('africanStudiesDetail').required = (ugrcVal === 'African Studies');
+        }
+
+        function submitData(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "Submitting... Please wait.";
+            btn.disabled = true;
+
+            const webAppUrl = "https://script.google.com/macros/s/AKfycbxSQvTafmagHVztImp5Zbg4XRSdgqY1grcgb9u3uRh1AagqH2ZtQRorOJy6pu0U7aaIyw/exec"; 
+
+            const track = document.getElementById('degreeTrack').value;
+            let courses = [];
+            const selector = track === 'BSc' ? 'input[name="bsc_courses"]:checked' : 'input[name="ba_courses"]:checked';
+            document.querySelectorAll(selector).forEach(cb => courses.push(cb.value));
+
+            const payload = {
+                name: studentName,
+                track: track,
+                courses: courses.join(', '),
+                otherBA: document.getElementById('otherBA').value,
+                ugrc: document.getElementById('ugrc').value,
+                africanStudies: document.getElementById('africanStudiesDetail').value
+            };
+
+            fetch(webAppUrl, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                alert("Thank you! Your choices have been recorded successfully.");
+                window.location.reload();
+            }).catch(err => {
+                alert("Something went wrong. Please try again.");
+                btn.innerText = "Submit Data";
+                btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
